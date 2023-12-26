@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Links</title>
+    <style>
+        /* Existing styles remain unchanged */
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .close-btn {
+            background-color: #d1495b;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background-color: #ad3445;
+        }
+
+        /* Styles for the query button */
+        .query-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .query-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+                // Function to open a specific shop link
+                function openShop(link) {
+            window.open(link, '_blank');
+        }
+
+        // Function to display a message about the shop
+        function showMessage(shopName) {
+            alert("You are entering the " + shopName + " shop!");
+        }
+
+        // Function to open the modal for queries
+        function openQueryModal() {
+            document.getElementById('queryModal').style.display = 'flex';
+        }
+
+        // Function to close the modal for queries
+        function closeQueryModal() {
+            document.getElementById('queryModal').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to Shop Links</h1>
+    <p>Explore different shops and find great products!</p>
+
+    <button onclick="openShop('https://www.example1.com')">Shop 1</button>
+    <button onclick="openShop('https://www.example2.com')">Shop 2</button>
+
+    <button onclick="showMessage('Shop 3')">Shop 3</button>
+    <button onclick="showMessage('Shop 4')">Shop 4</button> <br><br>
+
+    <!-- Button to open the query modal -->
+    <button class="query-btn" onclick="openQueryModal()">Submit a Query</button>
+
+    <!-- Query Modal Popup -->
+    <div id="queryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeQueryModal()">Close</span>
+            <p>Enter your query:</p>
+            <!-- Add your query input field or form here -->
+            <textarea rows="4" cols="40" placeholder="Type your query here..."></textarea>
+            <br>
+            <button onclick="closeQueryModal()">Submit</button>
+        </div>
+    </div>
+
+    <nav>
+        <a href="index.html">Back To Home</a>
+    </nav>
+</body>
+</html>
