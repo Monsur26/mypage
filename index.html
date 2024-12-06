@@ -72,6 +72,7 @@
             border-radius: 4px 0 0 4px;
             box-sizing: border-box;
         }
+        button[type=""]{}
 
         button {
             background-color: #4caf50;
@@ -87,13 +88,23 @@
         }
 
         input[type="submit"] {
-            background-color: #4caf50;
+            background-color: #2f3543;
             color: white;
             padding: 14px 20px;
             margin: 8px 0;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+        }
+        button[id ="CancelButton"]{
+            background-color: #4caf90;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+
         }
 
         input[type="submit"]:hover {
@@ -328,6 +339,26 @@
 
         </style>
         <script>
+             function validateLogin(event) {
+        event.preventDefault(); // Prevent form submission
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+
+        if (username === 'Username1' && password === 'Password1') {
+            alert('Login successful!');
+            // Redirect or perform desired action here
+        } else {
+            errorMessage.style.display = 'block'; // Show error message
+        }
+    }
+
+    function clearForm() {
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('errorMessage').style.display = 'none'; // Hide error message
+    }
       // Drag-and-drop functions
       function allowDrop(event) {
             event.preventDefault();
@@ -426,6 +457,79 @@ function generateRandomData() {
         function closeModal() {
             document.getElementById('myModal').style.display = 'none';
         }
+        function performSearch() {
+        const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        const searchResults = document.getElementById('searchResults');
+
+        // Mock search data
+        const products = [
+            { name: 'Rainforest Book', description: 'A book about rainforests.' },
+            { name: 'Eco-Friendly Bottle', description: 'Reusable water bottle.' },
+            { name: 'Rainforest Poster', description: 'Poster of a rainforest.' },
+            { name: 'Camping Tent', description: 'Perfect for rainforest adventures.' },
+            { name: 'Organic Coffee', description: 'Coffee from rainforest regions.' }
+        ];
+
+        // Filter results based on the query
+        const filteredProducts = products.filter(product =>
+            product.name.toLowerCase().includes(searchQuery) ||
+            product.description.toLowerCase().includes(searchQuery)
+        );
+
+        // Display results
+        if (filteredProducts.length > 0) {
+            searchResults.innerHTML = '<h3>Search Results:</h3>';
+            filteredProducts.forEach(product => {
+                searchResults.innerHTML += `<p><strong>${product.name}</strong>: ${product.description}</p>`;
+            });
+        } else {
+            searchResults.innerHTML = '<p>No results found. Try searching for something else!</p>';
+        }
+    }
+     // Dropdown change event
+     function handleDropdownChange() {
+        const selectedOption = document.getElementById('select').value;
+        document.getElementById('dropdownResult').innerText = `You selected: ${selectedOption}`;
+    }
+
+    // Radio button click event
+    function handleRadioClick() {
+        const selectedRadio = document.querySelector('input[name="radioGroup"]:checked').value;
+        document.getElementById('radioResult').innerText = `You selected: ${selectedRadio}`;
+    }
+
+    // Checkbox click event
+    function handleCheckboxClick() {
+        const selectedCheckboxes = Array.from(
+            document.querySelectorAll('input[name="checkboxGroup"]:checked')
+        ).map(checkbox => checkbox.value);
+
+        if (selectedCheckboxes.length > 0) {
+            document.getElementById('checkboxResult').innerText = `You selected: ${selectedCheckboxes.join(', ')}`;
+        } else {
+            document.getElementById('checkboxResult').innerText = 'No resources selected.';
+        }
+    }
+
+    // Date picker change event
+    // Handle both date selection and manual input
+    function handleDateChange() {
+        const selectedDate = document.getElementById('datePicker').value;
+        if (selectedDate) {
+            document.getElementById('dateResult').innerText = `You selected: ${selectedDate}`;
+        } else {
+            document.getElementById('dateResult').innerText = 'No date selected.';
+        }
+    }
+
+    function handleDateInput() {
+        const enteredDate = document.getElementById('datePicker').value;
+        if (enteredDate) {
+            document.getElementById('dateResult').innerText = `You entered: ${enteredDate}`;
+        } else {
+            document.getElementById('dateResult').innerText = 'No date entered.';
+        }
+    }
         </script>
 </head>
 <body>
@@ -445,55 +549,68 @@ function generateRandomData() {
         <p>Explore our amazing products and find great deals!</p>
 
         <h2>Login</h2>
-        <form>
+        <form onsubmit="return validateLogin(event)">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
-
+        
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-
-            <input id="loginButton" type="submit" value="Login">
+        
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <input id="loginButton" type="submit" value="Login">
+                <button id = "CancelButton" type="button" onclick="clearForm()">Cancel</button>
+            </div>
+            <p id="errorMessage" style="color: red; display: none;">Invalid username or password!</p>
         </form>
 
-        <h2>Dropdown Menu</h2>
-        <select id="select">
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+        <h2>Rainforest Dropdown</h2>
+        <select id="select" onchange="handleDropdownChange()" style="width: 100%; max-width: 400px;">
+            <option value="Amazon">Amazon Rainforest</option>
+            <option value="Congo">Congo Rainforest</option>
+            <option value="Daintree">Daintree Rainforest</option>
         </select>
-
-        <h2>Radio Buttons</h2>
-        <input type="radio" id="radio1" name="radioGroup" checked>
-        <label for="radio1">Option 1</label>
-
-        <input type="radio" id="radio2" name="radioGroup">
-        <label for="radio2">Option 2</label>
-
-        <h2>Checkboxes</h2>
-        <input type="checkbox" id="checkbox1" name="checkbox1">
-        <label for="checkbox1">Checkbox 1</label>
-
-        <input type="checkbox" id="checkbox2" name="checkbox2">
-        <label for="checkbox2">Checkbox 2</label>
-
-        <div id="myModal" class="modal">
-            <button onclick="openModal()">Open Modal</button>
-            <div class="modal-content">
-                <span class="close-btn" onclick="closeModal()">Close</span>
-                <p>This is a modal popup. You can add your content here.</p>
-            </div>
+        <p id="dropdownResult" style="margin-top: 10px; color: #30638e;"></p>
+        
+        <h2>Rainforest Animals (Radio Buttons)</h2>
+        <div style="display: flex; gap: 10px;">
+            <input type="radio" id="radio1" name="radioGroup" value="Jaguar" onclick="handleRadioClick()">
+            <label for="radio1">Jaguar</label>
+            <input type="radio" id="radio2" name="radioGroup" value="Sloth" onclick="handleRadioClick()">
+            <label for="radio2">Sloth</label>
+            <input type="radio" id="radio3" name="radioGroup" value="Toucan" onclick="handleRadioClick()">
+            <label for="radio3">Toucan</label>
         </div>
+        <p id="radioResult" style="margin-top: 10px; color: #30638e;"></p>
+        
+        <h2>Rainforest Resources (Checkboxes)</h2>
+        <div style="display: flex; gap: 10px;">
+            <input type="checkbox" id="checkbox1" name="checkboxGroup" value="Medicinal Plants" onclick="handleCheckboxClick()">
+            <label for="checkbox1">Medicinal Plants</label>
+            <input type="checkbox" id="checkbox2" name="checkboxGroup" value="Timber" onclick="handleCheckboxClick()">
+            <label for="checkbox2">Timber</label>
+            <input type="checkbox" id="checkbox3" name="checkboxGroup" value="Exotic Fruits" onclick="handleCheckboxClick()">
+            <label for="checkbox3">Exotic Fruits</label>
+        </div>
+        <p id="checkboxResult" style="margin-top: 10px; color: #30638e;"></p>
+        
+        <h2>Rainforest Exploration Date Picker</h2>
+        <label for="datePicker">Select or enter a date for exploration:</label>
+        <input 
+            type="date" 
+            id="datePicker" 
+            style="width: 100%; max-width: 400px;" 
+            onchange="handleDateChange()" 
+            oninput="handleDateInput()"
+            placeholder="YYYY-MM-DD"
+        >
+        <p id="dateResult" style="margin-top: 10px; color: #30638e;"></p>
 
            <!-- Search bar with search icon button -->
-    <div class="search-bar">
-        <input type="text" placeholder="Search...">
-        <button onclick="performSearch()">
-            <!-- Search icon (SVG) -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path d="M21.71 20.29l-5.44-5.44C16.78 13.11 18 10.67 18 8 18 4.69 15.31 2 12 2S6 4.69 6 8s2.69 6 6 6c2.67 0 5.11-1.22 6.85-3.15l5.44 5.44 1.42-1.42zM8 8c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z"/>
-            </svg>
-        </button>
-    </div>
+           <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for products..." />
+            <button onclick="performSearch()">Search</button>
+        </div>
+        <div id="searchResults" style="margin-top: 20px; color: #30638e;"></div>
         
 
         <h2>Table</h2>
