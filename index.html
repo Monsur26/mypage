@@ -52,6 +52,93 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .form-container input, .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: grab;
+        }
+
+        .card.dragging {
+            opacity: 0.5;
+            background-color: #e9ecef;
+        }
+
+        .dropzone {
+            width: 200px;
+            height: 200px;
+            background-color: #007BFF;
+            border-radius: 5px;
+            opacity: 0.5;
+            margin-top: -15px;
+        }
+
+        .card button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff4d4d;
+            color: white;
+            cursor: pointer;
+        }
+
+        .card button:hover {
+            background-color: #ff1a1a;
+        }
+        .toggle-button {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-arrow.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            display: none;
+            margin-top: 10px;
+        }
 
         input[type="text"],
         input[type="password"],
@@ -72,7 +159,7 @@
             border-radius: 4px 0 0 4px;
             box-sizing: border-box;
         }
-        button[type=""]{}
+        
 
         button {
             background-color: #4caf50;
@@ -114,16 +201,45 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-            text-align: left;
+            margin: 20px 0;
         }
 
         th, td {
-            padding: 15px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #ddd;
+        }
+
+        .highlight {
+            background-color: #ffe8a1;
+        }
+        .controls {
+            margin-bottom: 15px;
+        }
+
+        .controls input, .controls button {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .controls button {
+            cursor: pointer;
+        }
+
+        .filter-input {
+            margin: 10px 0;
+            padding: 5px;
+            width: 100%;
+            max-width: 300px;
         }
 
         /* Additional styles with provided hex colors */
@@ -159,51 +275,7 @@
         input[type="text"]::placeholder {
             color: #30638e;
         }    
-        .drag-container {
-            border: 2px dashed #30638e;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .drag-container:hover {
-            background-color: #eaf2f8;
-        }
-
-        .drag-item {
-            background-color: #92acd2;
-            padding: 10px;
-            border-radius: 4px;
-            color: white;
-            display: inline-block;
-            cursor: move;
-            border: 2px solid #30638e;
-        }
-
-        .drop-box {
-            border: 2px dashed #ad3445;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .drop-box:hover {
-            background-color: #fde6e8;
-        }
-
-        .drag-container,
-        .drop-box {
-            border-radius: 4px;
-            border: 2px solid #30638e;
-        }
-                /* Footer styles */
-                footer {
-            background-color: #1e2d39;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            width: 100%;
-        }
+       
         table.dynamic-table {
             margin-top: 20px;
         }
@@ -530,6 +602,219 @@ function generateRandomData() {
             document.getElementById('dateResult').innerText = 'No date entered.';
         }
     }
+    function toggleSection(sectionId, button) {
+            const section = document.getElementById(sectionId);
+            const arrow = button.querySelector('.toggle-arrow');
+
+            if (section.style.display === "block") {
+                section.style.display = "none"; // Collapse
+                arrow.classList.add('collapsed');
+            } else {
+                section.style.display = "block"; // Expand
+                arrow.classList.remove('collapsed');
+            }
+        }
+          // Function to sort the table by a specific column
+          function sortTable(columnIndex) {
+            const table = document.getElementById("rainforestTable");
+            const rows = Array.from(table.rows).slice(1); // Exclude header row
+            const isAscending = table.dataset.sortOrder !== "asc";
+
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].textContent.trim();
+                const cellB = b.cells[columnIndex].textContent.trim();
+
+                if (!isNaN(cellA) && !isNaN(cellB)) {
+                    return isAscending ? cellA - cellB : cellB - cellA;
+                }
+
+                return isAscending
+                    ? cellA.localeCompare(cellB)
+                    : cellB.localeCompare(cellA);
+            });
+
+            rows.forEach(row => table.tBodies[0].appendChild(row)); // Reattach sorted rows
+
+            table.dataset.sortOrder = isAscending ? "asc" : "desc";
+        }
+
+        // Function to filter rows based on input
+        function filterTable() {
+            const filterInput = document.getElementById("filter").value.toLowerCase();
+            const table = document.getElementById("rainforestTable");
+            const rows = table.tBodies[0].rows;
+
+            Array.from(rows).forEach(row => {
+                const cellText = row.cells[0].textContent.toLowerCase();
+                row.style.display = cellText.includes(filterInput) ? "" : "none";
+            });
+        }
+
+        // Optional: Highlight rows with specific criteria (e.g., endangered species > 50)
+        function highlightRows() {
+            const table = document.getElementById("rainforestTable");
+            const rows = table.tBodies[0].rows;
+
+            Array.from(rows).forEach(row => {
+                const endangeredSpecies = parseInt(row.cells[3].textContent);
+                if (endangeredSpecies > 50) {
+                    row.classList.add("highlight");
+                } else {
+                    row.classList.remove("highlight");
+                }
+            });
+        }
+
+        // Initial highlight based on criteria
+        highlightRows();
+         // Function to add a new row to the table
+         function addRow() {
+            const name = document.getElementById("rainforestName").value;
+            const country = document.getElementById("country").value;
+            const area = document.getElementById("area").value;
+            const species = document.getElementById("species").value;
+
+            if (!name || !country || !area || !species) {
+                alert("All fields are required!");
+                return;
+            }
+
+            const table = document.getElementById("dynamicTable").tBodies[0];
+            const newRow = table.insertRow();
+
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${country}</td>
+                <td>${area}</td>
+                <td>${species}</td>
+                <td>
+                    <button onclick="editRow(this)">Edit</button>
+                    <button onclick="deleteRow(this)">Delete</button>
+                </td>
+            `;
+
+            // Clear input fields
+            document.getElementById("rainforestName").value = "";
+            document.getElementById("country").value = "";
+            document.getElementById("area").value = "";
+            document.getElementById("species").value = "";
+        }
+
+        // Function to delete a row
+        function deleteRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        // Function to edit a row
+        function editRow(button) {
+            const row = button.parentNode.parentNode;
+            const cells = row.cells;
+
+            const name = prompt("Edit Rainforest Name:", cells[0].textContent);
+            const country = prompt("Edit Country:", cells[1].textContent);
+            const area = prompt("Edit Area (sq km):", cells[2].textContent);
+            const species = prompt("Edit Endangered Species:", cells[3].textContent);
+
+            if (name && country && area && species) {
+                cells[0].textContent = name;
+                cells[1].textContent = country;
+                cells[2].textContent = area;
+                cells[3].textContent = species;
+            } else {
+                alert("All fields are required to update!");
+            }
+        }
+        
+        let draggedCard = null;
+
+        function addCard() {
+            const title = document.getElementById("cardTitle").value.trim();
+            if (!title) {
+                alert("Card title cannot be empty!");
+                return;
+            }
+
+            const container = document.getElementById("cardsContainer");
+
+            // Create card
+            const card = document.createElement("div");
+            card.className = "card";
+            card.draggable = true;
+            card.innerHTML = `
+                <h4>${title}</h4>
+                <button onclick="deleteCard(this)">Delete</button>
+            `;
+
+            // Add drag-and-drop events
+            card.addEventListener("dragstart", dragStart);
+            card.addEventListener("dragend", dragEnd);
+
+            // Insert dropzones around the card
+            const dropzone = createDropzone();
+            container.appendChild(dropzone);
+            container.appendChild(card);
+
+            // Clear input
+            document.getElementById("cardTitle").value = "";
+        }
+
+        function deleteCard(button) {
+            const card = button.parentNode;
+            const container = document.getElementById("cardsContainer");
+
+            // Remove card and its associated dropzone
+            const dropzone = card.previousElementSibling;
+            container.removeChild(card);
+            if (dropzone && dropzone.classList.contains("dropzone")) {
+                container.removeChild(dropzone);
+            }
+        }
+
+        function createDropzone() {
+            const dropzone = document.createElement("div");
+            dropzone.className = "dropzone";
+
+            dropzone.addEventListener("dragover", dragOver);
+            dropzone.addEventListener("dragleave", dragLeave);
+            dropzone.addEventListener("drop", drop);
+
+            return dropzone;
+        }
+
+        // Drag-and-Drop Events
+        function dragStart(event) {
+            draggedCard = event.target;
+            event.target.classList.add("dragging");
+        }
+
+        function dragEnd(event) {
+            event.target.classList.remove("dragging");
+            draggedCard = null;
+        }
+
+        function dragOver(event) {
+            event.preventDefault();
+            event.target.style.backgroundColor = "#6c757d";
+        }
+
+        function dragLeave(event) {
+            event.target.style.backgroundColor = "#007BFF";
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const container = document.getElementById("cardsContainer");
+
+            // Place dragged card after the dropzone
+            if (draggedCard) {
+                container.insertBefore(draggedCard, event.target.nextSibling);
+
+                // Reset dropzone style
+                event.target.style.backgroundColor = "#007BFF";
+            }
+        }
+
         </script>
 </head>
 <body>
@@ -612,49 +897,87 @@ function generateRandomData() {
         </div>
         <div id="searchResults" style="margin-top: 20px; color: #30638e;"></div>
         
+        <h1>Interactive Table</h1>
 
-        <h2>Table</h2>
-        <table>
+        <label for="filter">Filter Rows by Rainforest Name:</label>
+        <input id="filter" class="filter-input" type="text" placeholder="Type to filter..." oninput="filterTable()">
+    
+        <table id="rainforestTable">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Price</th>
+                    <th onclick="sortTable(0)">Rainforest Name</th>
+                    <th onclick="sortTable(1)">Country</th>
+                    <th onclick="sortTable(2)">Area (sq km)</th>
+                    <th onclick="sortTable(3)">Endangered Species</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Product 1</td>
-                    <td>$20</td>
+                    <td>Amazon</td>
+                    <td>Brazil</td>
+                    <td>5,500,000</td>
+                    <td>100+</td>
                 </tr>
                 <tr>
-                    <td>Product 2</td>
-                    <td>$30</td>
+                    <td>Congo</td>
+                    <td>Democratic Republic of the Congo</td>
+                    <td>3,700,000</td>
+                    <td>80+</td>
+                </tr>
+                <tr>
+                    <td>Sundarbans</td>
+                    <td>India</td>
+                    <td>10,000</td>
+                    <td>50+</td>
+                </tr>
+                <tr>
+                    <td>Daintree</td>
+                    <td>Australia</td>
+                    <td>1,200</td>
+                    <td>20+</td>
                 </tr>
             </tbody>
         </table>
         <!-- Button to trigger alert -->
         <button id="alert-Btn" onclick="showCustomAlert()">Click me for a custom alert!</button>
-      <!-- Drag-and-drop section -->
-      <div class="drag-container" ondrop="drop(event, 'drag-container')" ondragover="allowDrop(event)">
-        <p>Drag and drop items here:</p>
-        <div id="drag-item" class="drag-item" draggable="true" ondragstart="drag(event)">Drag Me</div>
-    </div>
+        <h1>Dynamic Drag-and-Drop Cards</h1>
+
+        <div class="form-container">
+            <h3>Add a New Card</h3>
+            <input id="cardTitle" type="text" placeholder="Enter Card Title" required>
+            <button onclick="addCard()">Add Card</button>
+        </div>
+    
+        <div class="cards-container" id="cardsContainer">
+            <!-- Dynamic cards will be added here -->
+        </div>
 
     <!-- Drop box section -->
     <div class="drop-box" ondrop="drop(event, 'drop-box')" ondragover="allowDrop(event)">
         <p>Drop items here:</p>
     </div>
-    <h2>Dynamic Table</h2>
-    <table id="dynamic-table">
+    <h1>Dynamic Table</h1>
+
+    <div class="controls">
+        <input id="rainforestName" type="text" placeholder="Rainforest Name" required>
+        <input id="country" type="text" placeholder="Country" required>
+        <input id="area" type="number" placeholder="Area (sq km)" required>
+        <input id="species" type="number" placeholder="Endangered Species" required>
+        <button onclick="addRow()">Add Row</button>
+    </div>
+
+    <table id="dynamicTable">
         <thead>
             <tr>
-                <th>Column 1</th>
-                <th>Column 2</th>
-                <th>Column 3</th>
+                <th onclick="sortTable(0)">Rainforest Name</th>
+                <th onclick="sortTable(1)">Country</th>
+                <th onclick="sortTable(2)">Area (sq km)</th>
+                <th onclick="sortTable(3)">Endangered Species</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Table body content will be generated dynamically -->
+            <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
     <button onclick="generateRandomData()">Refresh Table</button><br>
@@ -668,27 +991,40 @@ function generateRandomData() {
         <button onclick="closePopup()">Close Popup</button>
     </div>
 
+
     <h2>Video Player</h2>
-    <video controls>
-        <source src="your-video.mp4" type="video/mp4"> <!-- Replace with your video URL -->
-        Your browser does not support the video tag.
-    </video>
+    <button class="toggle-button" onclick="toggleSection('videoSection', this)">
+        <span>Video Player</span>
+        <span class="toggle-arrow">▼</span>
+    </button>
+    <div id="videoSection" class="section-content">
+        <video controls>
+            <source src="your-video.mp4" type="video/mp4"> <!-- Replace with your video URL -->
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
     <h2>Horizontal Scroller</h2>
-    <div class="scroller-navigation">
-        <button class="scroller-button" onclick="changeImages('prev')">Previous</button>
-        <img id="scroller-images" class="scroller-images" src="image1.jpg" alt="Image 1" onclick="changeImages('next')"> <!-- Replace with your image URL -->
-        <button class="scroller-button" onclick="changeImages('next')">Next</button>
+    <button class="toggle-button" onclick="toggleSection('imageSection', this)">
+        <span>Image Section</span>
+        <span class="toggle-arrow">▼</span>
+    </button>
+    <div id="imageSection" class="section-content">
+        <div class="scroller-navigation">
+            <button class="scroller-button" onclick="changeImages('prev')">Previous</button>
+            <img id="scroller-images" class="scroller-images" src="image1.jpg" alt="Image 1" onclick="changeImages('next')"> <!-- Replace with your image URL -->
+            <button class="scroller-button" onclick="changeImages('next')">Next</button>
+        </div>
     </div>
-    <h3>Welcome to the Rainforest Wikipedia Frame</h3>
 
-    <!-- Frame containing Wikipedia Rainforest page -->
-    <iframe id="frame1" alt= "frame1" src="https://en.wikipedia.org/wiki/Rainforest" width="800" height="600" frameborder="0">Frame</iframe>
-
-    <p>Explore the information about rainforests on Wikipedia above.</p>
-
-    
-    </section>
+    <h2>Wikipedia Rainforest Frame</h2>
+    <button class="toggle-button" onclick="toggleSection('iframeSection', this)">
+        <span>Iframe Section</span>
+        <span class="toggle-arrow">▼</span>
+    </button>
+    <div id="iframeSection" class="section-content">
+        <iframe id="frame1" alt="frame1" src="https://en.wikipedia.org/wiki/Rainforest" width="800" height="600" frameborder="0"></iframe>
+    </div>
 
 </body>
 </html>
